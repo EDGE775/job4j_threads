@@ -8,7 +8,7 @@ public class ConsoleProgress implements Runnable {
         int index = 0;
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                index = index > 2 ? 0 : index;
+                index = index > loadChars.length - 1 ? 0 : index;
                 Thread.sleep(500);
                 System.out.printf("\r Loading ... %s", loadChars[index]);
                 index++;
