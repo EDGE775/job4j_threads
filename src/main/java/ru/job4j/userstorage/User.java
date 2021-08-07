@@ -2,7 +2,6 @@ package ru.job4j.userstorage;
 
 import net.jcip.annotations.ThreadSafe;
 
-@ThreadSafe
 public class User {
     private final int id;
 
@@ -13,15 +12,15 @@ public class User {
         this.amount = amount;
     }
 
-    public synchronized int getAmount() {
+    public int getAmount() {
         return amount;
     }
 
-    public synchronized void setAmount(int amount) {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
-    public synchronized int getId() {
+    public int getId() {
         return id;
     }
 
