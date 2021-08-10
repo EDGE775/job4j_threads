@@ -3,18 +3,18 @@ package ru.job4j.userstorage;
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @ThreadSafe
 public class UserStorage {
     @GuardedBy("this")
-    private final List<User> users = new LinkedList<>();
+    private final Map<Integer, User> users = new HashMap<>();
 
     public synchronized boolean add(User user) {
         boolean result = false;
-        if (!isUserPresent(getIndex(user.getId()))) {
-            users.add(user);
+        if (!users.containsKey(user.getId())) {
+            users.put(user.getId(), user);
             result = true;
         }
         return result;
@@ -22,9 +22,8 @@ public class UserStorage {
 
     public synchronized boolean update(User user) {
         boolean result = false;
-        int index = getIndex(user.getId());
-        if (isUserPresent(index)) {
-            users.set(index, user);
+        if (users.containsKey(user.getId())) {
+            users.put(user.getId(), user);
             result = true;
         }
         return result;
@@ -32,20 +31,17 @@ public class UserStorage {
 
     public synchronized boolean delete(User user) {
         boolean result = false;
-        int index = getIndex(user.getId());
-        if (isUserPresent(index)) {
-            users.remove(index);
+        if (users.containsKey(user.getId())) {
+            users.remove(user.getId(), user);
             result = true;
         }
         return result;
     }
 
     public synchronized void transfer(int fromId, int told, int amount) {
-        int fromIndex = getIndex(fromId);
-        int toIndex = getIndex(told);
-        if (isUserPresent(fromIndex) && isUserPresent(toIndex)) {
-            User fromUser = users.get(fromIndex);
-            User toUser = users.get(toIndex);
+        if (users.containsKey(fromId) && users.containsKey(told)) {
+            User fromUser = users.get(fromId);
+            User toUser = users.get(told);
             if (fromUser.getAmount() < amount) {
                 throw new IllegalArgumentException(
                         String.format("У юзера: %s недостаточно денег для перевода", fromUser));
@@ -55,29 +51,8 @@ public class UserStorage {
         }
     }
 
-    private synchronized int getIndex(int id) {
-        int index = -1;
-        for (int i = 0; i < users.size(); i++) {
-            int userId = users.get(i).getId();
-            if (userId == id) {
-                index = i;
-                break;
-            }
-        }
-        return index;
-    }
-
-    private boolean isUserPresent(int userId) {
-        return userId != -1;
-    }
-
     public synchronized User getUserById(int id) {
-        User result = null;
-        int index = getIndex(id);
-        if (isUserPresent(index)) {
-            result = users.get(index);
-        }
-        return result;
+        return users.get(id);
     }
 
     public static void main(String[] args) {
