@@ -1,6 +1,7 @@
 package ru.job4j;
 
 import org.junit.Test;
+import ru.job4j.buffer.SimpleBlockingQueue;
 
 import java.util.ArrayList;
 import java.util.List;
