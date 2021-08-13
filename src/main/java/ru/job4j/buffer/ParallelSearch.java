@@ -6,10 +6,9 @@ public class ParallelSearch {
 
     public static void main(String[] args) {
         SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(10);
-        AtomicBoolean isFinish = new AtomicBoolean(false);
         final Thread consumer = new Thread(
                 () -> {
-                    while (!isFinish.get()) {
+                    while (!Thread.currentThread().isInterrupted()) {
                         try {
                             System.out.println(queue.poll());
                         } catch (InterruptedException e) {
@@ -29,7 +28,6 @@ public class ParallelSearch {
                             e.printStackTrace();
                         }
                     }
-                    isFinish.set(true);
                     consumer.interrupt();
                 }
         ).start();
