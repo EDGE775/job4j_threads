@@ -2,7 +2,7 @@ package ru.job4j.cache;
 
 public class Base {
     private final int id;
-    private volatile int version;
+    private final int version;
     private String name;
 
     public Base(int id, int version) {
@@ -24,9 +24,5 @@ public class Base {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public synchronized void updateVersion() {
-        version++;
     }
 }
