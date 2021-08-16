@@ -12,40 +12,29 @@ public class ThreadPool {
 
     public ThreadPool(int queueSize) {
         int size = Runtime.getRuntime().availableProcessors();
-        System.out.printf("Количество нитей: %d%n", size);
         tasks = new SimpleBlockingQueue<>(queueSize);
         for (int i = 0; i < size; i++) {
             Thread thread = new Thread(() -> {
                 try {
                     while (!Thread.currentThread().isInterrupted()) {
                         tasks.poll().run();
-                        System.out.printf("Отработала нить: %s%n", Thread.currentThread().getName());
                     }
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    System.out.printf("Нить: %s завершила работу%n", Thread.currentThread().getName());
                 }
             });
             thread.start();
-            System.out.printf("Запущена нить: %s%n", thread.getName());
             threads.add(thread);
         }
     }
 
     public void work(Runnable job) throws InterruptedException {
         tasks.offer(job);
-        System.out.printf("Задача %s передана в работу%n", job);
-        for (Thread thread : threads) {
-            if (thread.getState() == Thread.State.TIMED_WAITING) {
-                thread.notify();
-            }
-        }
     }
 
     public void shutdown() {
         for (Thread thread : threads) {
             thread.interrupt();
-            System.out.printf("Нити %s передан сигнал на отключение%n", thread.getName());
         }
     }
 
