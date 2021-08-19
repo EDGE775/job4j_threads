@@ -1,11 +1,7 @@
 package ru.job4j.pool;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ParallelSearchIndex<T> extends RecursiveTask<Integer> {
 
